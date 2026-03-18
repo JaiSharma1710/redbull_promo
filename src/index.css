@@ -1,0 +1,83 @@
+:root {
+  --bg: #050d23;
+  --bg-deep: #020816;
+  --panel: rgba(7, 18, 44, 0.84);
+  --text-primary: #f5f7ff;
+  --text-soft: rgba(229, 235, 255, 0.76);
+  --text-muted: rgba(229, 235, 255, 0.54);
+  --redbull-blue: #1236a2;
+  --redbull-red: #f30b53;
+  --gold: #ffd24a;
+  --display-font: 'Bebas Neue', 'Impact', 'Arial Narrow', sans-serif;
+  --body-font: 'Space Grotesk', 'Avenir Next', 'Segoe UI', sans-serif;
+  font-family: var(--body-font);
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at top left, rgba(25, 74, 194, 0.28), transparent 26%),
+    radial-gradient(circle at 85% 14%, rgba(243, 11, 83, 0.14), transparent 22%),
+    linear-gradient(180deg, #07112b 0%, #040a18 44%, #020714 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 12%),
+    radial-gradient(circle at 50% 0%, rgba(255, 214, 85, 0.08), transparent 26%);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.42), transparent 78%);
+  opacity: 0.32;
+}
+
+a,
+button {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(255, 210, 74, 0.3);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
