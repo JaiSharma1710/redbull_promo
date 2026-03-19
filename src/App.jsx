@@ -1,284 +1,248 @@
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import {
+  BrowserRouter,
+  Link,
+  NavLink,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router-dom'
+import { HomePage } from './pages/HomePage.jsx'
+import { DrinksPage } from './pages/DrinksPage.jsx'
+import { drinks, logoUrl } from './siteData.js'
 import './App.css'
 
-const logoUrl =
-  'https://redbull-promotional.s3.ap-south-1.amazonaws.com/redbull_logo.svg'
-const canUrl =
-  'https://redbull-promotional.s3.ap-south-1.amazonaws.com/redbull_can.webp'
+function ScrollToTop() {
+  const { pathname } = useLocation()
 
-const stats = [
-  { value: '04', label: 'scroll-led story chapters' },
-  { value: '360', label: 'degrees of visual energy' },
-  { value: '24/7', label: 'campus-ready momentum' },
-]
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [pathname])
 
-const features = [
-  {
-    eyebrow: 'Velocity',
-    title: 'Built to feel like a launch sequence.',
-    text: 'Large typography, layered gradients, and motion-tuned transitions create a premium campaign page instead of a basic college submission.',
-  },
-  {
-    eyebrow: 'Adrenaline',
-    title: 'Animations react as the page moves.',
-    text: 'Sections reveal, cards lift, grids drift, and the can keeps a controlled parallax presence to make scrolling feel intentional.',
-  },
-  {
-    eyebrow: 'Impact',
-    title: 'A strong finish with a direct call to action.',
-    text: 'The final section closes the story with event-driven messaging for launches, fests, gaming nights, or athlete partnerships.',
-  },
-]
+  return null
+}
 
-const timeline = [
-  'Freshers week launch drops',
-  'Night event sponsorship push',
-  'Esports and athlete collabs',
-  'Final CTA for campus activation',
-]
+function SiteHeader({ isMenuOpen, onToggleMenu, onCloseMenu }) {
+  const [isDrinksExpanded, setIsDrinksExpanded] = useState(true)
+  const drinkRailRef = useRef(null)
 
-function App() {
-  const sectionRefs = useRef([])
-  const [visibleSections, setVisibleSections] = useState({})
-  const [scrollY, setScrollY] = useState(0)
+  const scrollDrinkRail = (direction) => {
+    const node = drinkRailRef.current
+    if (!node) {
+      return
+    }
 
-  const registerSection = (index) => (node) => {
-    sectionRefs.current[index] = node
+    const start = node.scrollLeft
+    const distance = direction * 332
+    const duration = 420
+    let startTime = null
+
+    const easeInOutCubic = (value) => {
+      return value < 0.5
+        ? 4 * value * value * value
+        : 1 - Math.pow(-2 * value + 2, 3) / 2
+    }
+
+    const animate = (timestamp) => {
+      if (startTime === null) {
+        startTime = timestamp
+      }
+
+      const elapsed = timestamp - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = easeInOutCubic(progress)
+      node.scrollLeft = start + distance * eased
+
+      if (progress < 1) {
+        window.requestAnimationFrame(animate)
+      }
+    }
+
+    window.requestAnimationFrame(animate)
   }
 
-  const handleScroll = useEffectEvent(() => {
-    setScrollY(window.scrollY)
-  })
-
-  useEffect(() => {
-    handleScroll()
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [handleScroll])
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        setVisibleSections((current) => {
-          const next = { ...current }
-
-          entries.forEach((entry) => {
-            const key = entry.target.dataset.section
-            if (entry.isIntersecting) {
-              next[key] = true
-            }
-          })
-
-          return next
-        })
-      },
-      { threshold: 0.25 },
-    )
-
-    sectionRefs.current.forEach((section) => {
-      if (section) {
-        observer.observe(section)
-      }
-    })
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
-  const heroShift = Math.min(scrollY * 0.16, 140)
-  const canLift = Math.min(scrollY * 0.12, 120)
-  const glowShift = Math.min(scrollY * 0.08, 90)
-
   return (
-    <div className="page-shell">
-      <header className="topbar">
-        <a className="brand" href="#hero" aria-label="Red Bull home">
-          <img src={logoUrl} alt="Red Bull" />
-        </a>
-        <nav className="topnav" aria-label="Primary">
-          <a href="#story">Story</a>
-          <a href="#momentum">Momentum</a>
-          <a href="#campus">Campus</a>
-          <a href="#launch">Launch</a>
-        </nav>
-        <a className="topbar-cta" href="#launch">
-          Launch Campaign
-        </a>
+    <>
+      <header className="site-header">
+        <div className="site-header__inner">
+          <div className="site-brand">
+            <button
+              className="site-brand__menu-button"
+              type="button"
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMenuOpen}
+              onClick={onToggleMenu}
+            >
+              <span className="site-brand__menu" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+            <Link to="/" aria-label="Red Bull home">
+              <img src={logoUrl} alt="Red Bull" />
+            </Link>
+          </div>
+
+          <nav className="site-nav" aria-label="Primary">
+            <NavLink to="/" end>
+              Home
+            </NavLink>
+            <NavLink to="/drinks">Energy Drinks</NavLink>
+          </nav>
+
+          <Link className="site-header__cta" to="/drinks">
+            Explore Drinks
+          </Link>
+        </div>
       </header>
 
-      <main>
-        <section className="hero-section" id="hero">
-          <div
-            className="hero-orb hero-orb-left"
-            style={{ transform: `translate3d(0, ${glowShift}px, 0)` }}
-          />
-          <div
-            className="hero-orb hero-orb-right"
-            style={{ transform: `translate3d(0, ${-glowShift}px, 0)` }}
-          />
-
-          <div className="hero-copy">
-            <p className="eyebrow">The Original Energy Drink</p>
-            <h1>
-              Red Bull
-              <span>Gives Your Campus Wings</span>
-            </h1>
-            <p className="hero-text">
-              A scroll-first promotional experience designed for college events,
-              athlete showcases, esports nights, and high-energy brand drops.
-            </p>
-
-            <div className="hero-actions">
-              <a className="button-primary" href="#launch">
-                Start the rush
-              </a>
-              <a className="button-secondary" href="#story">
-                Explore motion
-              </a>
+      <div className={`menu-overlay ${isMenuOpen ? 'is-open' : ''}`}>
+        <div className="menu-overlay__surface">
+          <div className="menu-overlay__header">
+            <div className="menu-overlay__brand">
+              <button
+                className="menu-overlay__close"
+                type="button"
+                aria-label="Close menu"
+                onClick={onCloseMenu}
+              >
+                x
+              </button>
+              <img src={logoUrl} alt="Red Bull" />
             </div>
+          </div>
 
-            <div className="stat-row">
-              {stats.map((stat) => (
-                <div className="stat-card" key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
+          <div className="menu-overlay__layout">
+            <aside className="menu-overlay__sidebar">
+              <Link to="/" onClick={onCloseMenu}>
+                Home
+              </Link>
+              <div className="menu-overlay__group">
+                <button
+                  className="menu-overlay__toggle"
+                  type="button"
+                  aria-expanded={isDrinksExpanded}
+                  onClick={() => setIsDrinksExpanded((current) => !current)}
+                >
+                  Energy Drinks
+                  <span
+                    className={`menu-overlay__toggle-icon ${
+                      isDrinksExpanded ? 'is-expanded' : ''
+                    }`}
+                    aria-hidden="true"
+                  />
+                </button>
+                <div
+                  className={`menu-overlay__subnav ${
+                    isDrinksExpanded ? 'is-expanded' : ''
+                  }`}
+                >
+                  <Link to="/drinks" onClick={onCloseMenu}>
+                    All Red Bull Energy Drinks
+                  </Link>
+                  {drinks.map((drink) => (
+                    <Link key={drink.id} to="/drinks" onClick={onCloseMenu}>
+                      {drink.name}
+                    </Link>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </aside>
 
-          <div
-            className="hero-visual"
-            style={{ transform: `translate3d(0, ${heroShift}px, 0)` }}
-          >
-            <div className="can-halo" />
-            <div
-              className="can-frame"
-              style={{ transform: `translate3d(0, ${-canLift}px, 0)` }}
-            >
-              <img className="hero-can" src={canUrl} alt="Red Bull can" />
-            </div>
-            <div className="energy-ring energy-ring-one" />
-            <div className="energy-ring energy-ring-two" />
-            <div className="floating-tag">Charge the night</div>
-            <div className="floating-tag floating-tag-alt">Fuel the finals</div>
-          </div>
-
-          <div className="scroll-cue" aria-hidden="true">
-            <span />
-            Scroll for impact
-          </div>
-        </section>
-
-        <section
-          ref={registerSection(0)}
-          data-section="story"
-          id="story"
-          className={`panel story-panel ${visibleSections.story ? 'is-visible' : ''}`}
-        >
-          <div className="panel-heading">
-            <p className="eyebrow">Campaign Story</p>
-            <h2>Designed to open clean, then build pressure as you scroll.</h2>
-          </div>
-
-          <div className="story-grid">
-            {features.map((feature) => (
-              <article className="feature-card" key={feature.title}>
-                <p className="feature-eyebrow">{feature.eyebrow}</p>
-                <h3>{feature.title}</h3>
-                <p>{feature.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section
-          ref={registerSection(1)}
-          data-section="momentum"
-          id="momentum"
-          className={`panel momentum-panel ${
-            visibleSections.momentum ? 'is-visible' : ''
-          }`}
-        >
-          <div className="panel-heading narrow">
-            <p className="eyebrow">Momentum</p>
-            <h2>One can. Multiple scenes. Constant movement.</h2>
-          </div>
-
-          <div className="momentum-layout">
-            <div className="timeline-card">
-              {timeline.map((item, index) => (
-                <div className="timeline-step" key={item}>
-                  <span>{`0${index + 1}`}</span>
-                  <p>{item}</p>
+            <div className="menu-overlay__content">
+              <section className="menu-overlay__section">
+                <div className="menu-overlay__section-head">
+                  <h2>Red Bull Energy Drinks</h2>
+                  <div className="menu-overlay__rail-controls">
+                    <button
+                      className="menu-overlay__rail-button"
+                      type="button"
+                      aria-label="Scroll drinks left"
+                      onClick={() => scrollDrinkRail(-1)}
+                    >
+                      ‹
+                    </button>
+                    <button
+                      className="menu-overlay__rail-button"
+                      type="button"
+                      aria-label="Scroll drinks right"
+                      onClick={() => scrollDrinkRail(1)}
+                    >
+                      ›
+                    </button>
+                    <Link to="/drinks" onClick={onCloseMenu}>
+                      View all
+                    </Link>
+                  </div>
                 </div>
-              ))}
+                <div className="menu-overlay__drink-rail" ref={drinkRailRef}>
+                  {drinks.map((drink) => (
+                    <Link
+                      className="menu-overlay__drink-card"
+                      key={drink.id}
+                      to="/drinks"
+                      onClick={onCloseMenu}
+                    >
+                      <div className="menu-overlay__drink-surface">
+                        <h3>{drink.name}</h3>
+                        <img src={drink.image} alt={drink.name} />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
             </div>
-
-            <div className="quote-card">
-              <p>
-                “Not just a product page. This feels like an event teaser, a
-                sports promo, and a launch poster blended into one.”
-              </p>
-            </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </>
+  )
+}
 
-        <section
-          ref={registerSection(2)}
-          data-section="campus"
-          id="campus"
-          className={`panel campus-panel ${visibleSections.campus ? 'is-visible' : ''}`}
-        >
-          <div className="campus-copy">
-            <p className="eyebrow">Campus Activation</p>
-            <h2>Turn the landing page into the pre-event hype machine.</h2>
-            <p>
-              Use it for college festivals, battle-of-the-bands posters, gaming
-              tournaments, athlete signups, or branded night runs. The layout is
-              flexible enough to present schedules, sponsors, or hero messages.
-            </p>
-          </div>
+function AppShell() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { pathname } = useLocation()
 
-          <div className="campus-grid">
-            <div className="campus-card">Sports Meet</div>
-            <div className="campus-card">DJ Night</div>
-            <div className="campus-card">Esports Arena</div>
-            <div className="campus-card">Creator Drop</div>
-          </div>
-        </section>
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [pathname])
 
-        <section
-          ref={registerSection(3)}
-          data-section="launch"
-          id="launch"
-          className={`panel launch-panel ${visibleSections.launch ? 'is-visible' : ''}`}
-        >
-          <div className="launch-copy">
-            <p className="eyebrow">Final Push</p>
-            <h2>Ready for your college presentation, showcase, or demo reel.</h2>
-            <p>
-              Built as a polished single-page experience with strong motion,
-              branded visuals, and a presentation-friendly structure.
-            </p>
-          </div>
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : ''
 
-          <div className="launch-actions">
-            <a className="button-primary" href="#hero">
-              Replay intro
-            </a>
-            <a className="button-secondary" href="https://www.redbull.com/" target="_blank" rel="noreferrer">
-              View brand inspiration
-            </a>
-          </div>
-        </section>
-      </main>
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMenuOpen])
+
+  return (
+    <div className="app-shell">
+      <ScrollToTop />
+      <SiteHeader
+        isMenuOpen={isMenuOpen}
+        onToggleMenu={() => setIsMenuOpen((current) => !current)}
+        onCloseMenu={() => setIsMenuOpen(false)}
+      />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/drinks" element={<DrinksPage />} />
+      </Routes>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
   )
 }
 
