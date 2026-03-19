@@ -11,8 +11,8 @@ const quickHighlights = [
     text: 'The signature taste that anchors the full Red Bull lineup.',
   },
   {
-    title: 'Four Flavor Stories',
-    text: 'Original, Sugarfree, Pink Edition, and Yellow Edition in one clean flow.',
+    title: 'Five Flavor Stories',
+    text: 'Original, Sugarfree, Pink Edition, Yellow Edition, and Red Edition in one clean flow.',
   },
   {
     title: 'Built To Feel Premium',
@@ -95,6 +95,9 @@ export function HomePage() {
   }
 
   const activeDrink = drinks[activeIndex]
+  const supportingDrinks = drinks
+    .filter((drink) => drink.id !== activeDrink.id)
+    .slice(0, 3)
 
   return (
     <main className="page page-home">
@@ -141,15 +144,6 @@ export function HomePage() {
 
           <div className="flavor-showcase__layout">
             <div className="flavor-showcase__copy">
-              <div className="flavor-showcase__intro">
-                <p className="eyebrow">All Flavors</p>
-                <h2>Scroll through the lineup like a product launch.</h2>
-                <p>
-                  As you scroll, each can takes over the stage while the left
-                  panel updates with its name, flavor, and product story.
-                </p>
-              </div>
-
               <article
                 className="flavor-detail-card"
                 style={{
@@ -161,9 +155,18 @@ export function HomePage() {
                 <p className="flavor-detail-card__eyebrow">{activeDrink.kicker}</p>
                 <h3>{activeDrink.name}</h3>
                 <p>{activeDrink.description}</p>
+                <span className="flavor-detail-card__badge" aria-hidden="true" />
                 <div className="flavor-detail-card__meta">
                   <span>{activeDrink.flavor}</span>
                   <span>{`0${activeIndex + 1}`}</span>
+                </div>
+                <div className="flavor-detail-card__actions">
+                  <Link className="button-primary button-primary--small" to="/drinks">
+                    {activeDrink.buttonLabel}
+                  </Link>
+                  <Link className="button-secondary button-secondary--small" to="/drinks">
+                    Select your flavor
+                  </Link>
                 </div>
               </article>
             </div>
@@ -175,19 +178,24 @@ export function HomePage() {
                   transform: `translate(${stage.x}%, ${stage.y}%) scale(${stage.scale}) rotate(${stage.rotate}deg)`,
                 }}
               >
-                {drinks.map((drink, index) => {
-                  const opacity = clamp(1 - Math.abs(segment - index) * 1.2, 0, 1)
+                <img
+                  className="flavor-showcase__can flavor-showcase__can--active"
+                  src={activeDrink.image}
+                  alt={activeDrink.name}
+                />
+              </div>
 
-                  return (
-                    <img
-                      key={drink.id}
-                      className="flavor-showcase__can"
-                      src={drink.image}
-                      alt={drink.name}
-                      style={{ opacity }}
-                    />
-                  )
-                })}
+              <div className="flavor-showcase__supporting">
+                {supportingDrinks.map((drink, index) => (
+                  <img
+                    key={drink.id}
+                    className={`flavor-showcase__supporting-can flavor-showcase__supporting-can--${
+                      index + 1
+                    }`}
+                    src={drink.image}
+                    alt={drink.name}
+                  />
+                ))}
               </div>
             </div>
           </div>
