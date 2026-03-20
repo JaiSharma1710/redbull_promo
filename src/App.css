@@ -1638,7 +1638,7 @@
   left: 50%;
   top: 50%;
   z-index: 2;
-  width: min(100%, 260px);
+  width: min(100%, 220px);
   will-change: transform;
   transition: transform 180ms linear;
 }
@@ -1648,6 +1648,57 @@
   width: 100%;
   height: auto;
   filter: drop-shadow(0 32px 56px rgba(4, 10, 24, 0.22));
+}
+
+.original-detail__ingredient-stack {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  width: min(100% - 64px, 520px);
+  min-height: 260px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ingredient-card {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(249, 251, 255, 0.98));
+  box-shadow:
+    0 16px 40px rgba(8, 18, 40, 0.1),
+    0 2px 0 rgba(255, 255, 255, 0.86) inset;
+  will-change: transform;
+  transition: transform 180ms linear;
+  overflow: hidden;
+}
+
+.ingredient-card__content {
+  padding: 22px 24px 24px;
+  color: #09162e;
+}
+
+.ingredient-card h3 {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+}
+
+.ingredient-card p {
+  margin: 14px 0 0;
+  color: rgba(9, 22, 46, 0.9);
+  font-size: clamp(0.96rem, 1.1vw, 1.08rem);
+  line-height: 1.5;
+}
+
+.ingredient-card.is-back,
+.ingredient-card.is-top {
+  min-height: 250px;
 }
 
 .original-detail__progress {
@@ -1789,7 +1840,20 @@
   }
 
   .original-detail__can-wrap {
-    width: min(100%, 240px);
+    width: min(100%, 200px);
+  }
+
+  .original-detail__ingredient-stack {
+    width: min(100% - 48px, 460px);
+    min-height: 230px;
+  }
+
+  .ingredient-card.is-top {
+    min-height: 230px;
+  }
+
+  .ingredient-card.is-back {
+    min-height: 230px;
   }
 
   .flavor-showcase__layout {
@@ -2005,6 +2069,33 @@
     top: auto;
     width: min(100%, 240px);
     transform: none !important;
+  }
+
+  .original-detail__ingredient-stack {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: 100%;
+    min-height: 240px;
+    margin-top: -20px;
+    transform: none;
+  }
+
+  .ingredient-card {
+    left: 50%;
+    width: min(100%, 420px);
+  }
+
+  .ingredient-card__content {
+    padding: 20px 20px 22px;
+  }
+
+  .ingredient-card h3 {
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
+
+  .ingredient-card p {
+    font-size: 0.98rem;
   }
 
   .original-detail__progress {
