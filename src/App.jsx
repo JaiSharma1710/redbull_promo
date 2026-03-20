@@ -207,6 +207,43 @@ function SiteHeader({ isMenuOpen, onToggleMenu, onCloseMenu }) {
   )
 }
 
+function SiteFooter() {
+  const year = new Date().getFullYear()
+
+  return (
+    <footer className="site-footer">
+      <div className="site-footer__surface">
+        <div className="site-footer__brand">
+          <img src={logoUrl} alt="Red Bull" />
+          <div>
+            <p className="site-footer__eyebrow">Red Bull Energy Drink</p>
+            <p className="site-footer__text">
+              Original taste, full lineup, and dedicated product pages built around the can.
+            </p>
+          </div>
+        </div>
+
+        <div className="site-footer__links">
+          <a href="https://www.instagram.com/redbull/" rel="noreferrer" target="_blank">
+            Instagram
+          </a>
+          <a href="https://www.youtube.com/@RedBull" rel="noreferrer" target="_blank">
+            YouTube
+          </a>
+          <a href="https://www.facebook.com/RedBull/" rel="noreferrer" target="_blank">
+            Facebook
+          </a>
+          <a href="https://www.redbull.com/" rel="noreferrer" target="_blank">
+            Official Site
+          </a>
+        </div>
+
+        <p className="site-footer__copyright">© {year} Red Bull promotional experience.</p>
+      </div>
+    </footer>
+  )
+}
+
 function AppShell() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { pathname } = useLocation()
@@ -236,6 +273,7 @@ function AppShell() {
         <Route path="/drinks" element={<DrinksPage />} />
         <Route path="/drinks/:drinkId" element={<DrinkDetailPage />} />
       </Routes>
+      <SiteFooter />
     </div>
   )
 }

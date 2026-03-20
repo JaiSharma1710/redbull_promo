@@ -285,17 +285,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <footer className="home-footer">
-        <div>
-          <img src={classicCanUrl} alt="Red Bull original can" />
-          <p>Red Bull Energy Drink</p>
-        </div>
-        <p>
-          Original taste. Full lineup. One clean promotional page built around
-          the drink.
-        </p>
-        <Link to="/drinks">Open drinks route</Link>
-      </footer>
     </main>
   )
 }
