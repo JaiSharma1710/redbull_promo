@@ -1,6 +1,9 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { classicCanUrl } from '../siteData.js'
+import { classicCanUrl, drinks } from '../siteData.js'
+
+const promoVideoUrl =
+  'https://redbull-promotional.s3.ap-south-1.amazonaws.com/redbull_orginal_product_ad.mp4'
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max)
@@ -144,11 +147,30 @@ function SceneBlock({ scene, isActive }) {
 
 export function OriginalDrinkPage() {
   const touchStartYRef = useRef(0)
+  const promoVideoRef = useRef(null)
   const [progress, setProgress] = useState(0)
+  const [isMuted, setIsMuted] = useState(true)
+  const [activeDrinkIndex, setActiveDrinkIndex] = useState(0)
 
   const updateProgress = useEffectEvent((delta) => {
     const intensity = window.innerWidth <= 820 ? 0.00082 : 0.00058
     setProgress((current) => clamp(current + delta * intensity, 0, 1))
+  })
+
+  const handleScrollDelta = useEffectEvent((delta) => {
+    const isAtTop = window.scrollY <= 0
+    const isSliderComplete = progress >= 0.999
+
+    if (delta > 0 && isSliderComplete) {
+      return false
+    }
+
+    if (delta < 0 && !isAtTop) {
+      return false
+    }
+
+    updateProgress(delta)
+    return true
   })
 
   useEffect(() => {
@@ -158,14 +180,10 @@ export function OriginalDrinkPage() {
       return undefined
     }
 
-    const previousBodyOverflow = document.body.style.overflow
-    const previousHtmlOverflow = document.documentElement.style.overflow
-    document.body.style.overflow = 'hidden'
-    document.documentElement.style.overflow = 'hidden'
-
     const handleWheel = (event) => {
-      event.preventDefault()
-      updateProgress(event.deltaY)
+      if (handleScrollDelta(event.deltaY)) {
+        event.preventDefault()
+      }
     }
 
     const handleTouchStart = (event) => {
@@ -176,8 +194,9 @@ export function OriginalDrinkPage() {
       const currentY = event.touches[0]?.clientY ?? 0
       const delta = touchStartYRef.current - currentY
       touchStartYRef.current = currentY
-      event.preventDefault()
-      updateProgress(delta * 1.2)
+      if (handleScrollDelta(delta * 1.2)) {
+        event.preventDefault()
+      }
     }
 
     window.scrollTo({ top: 0, behavior: 'auto' })
@@ -186,13 +205,24 @@ export function OriginalDrinkPage() {
     window.addEventListener('touchmove', handleTouchMove, { passive: false })
 
     return () => {
-      document.body.style.overflow = previousBodyOverflow
-      document.documentElement.style.overflow = previousHtmlOverflow
       window.removeEventListener('wheel', handleWheel)
       window.removeEventListener('touchstart', handleTouchStart)
       window.removeEventListener('touchmove', handleTouchMove)
     }
-  }, [updateProgress])
+  }, [handleScrollDelta])
+
+  useEffect(() => {
+    const node = promoVideoRef.current
+    if (!node) {
+      return
+    }
+
+    node.muted = isMuted
+
+    if (!isMuted) {
+      void node.play().catch(() => {})
+    }
+  }, [isMuted])
 
   const sceneSegments = scenes.length - 1
   const sceneStep = 1 + sceneHoldSegments
@@ -226,6 +256,20 @@ export function OriginalDrinkPage() {
   const visibleCardCount = Math.ceil(stackProgress / cardStep - 0.02)
   const topCardIndex =
     visibleCardCount > 0 ? Math.min(visibleCardCount - 1, ingredientCards.length - 1) : -1
+  const activeDrink = drinks[activeDrinkIndex]
+  const lineupDrinks = drinks.map((drink, index) => {
+    const relativeIndex = (index - activeDrinkIndex + drinks.length) % drinks.length
+    return { ...drink, relativeIndex }
+  })
+  const shiftActiveDrink = (direction) => {
+    const currentScrollY = window.scrollY
+
+    setActiveDrinkIndex((current) => (current + direction + drinks.length) % drinks.length)
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: currentScrollY, behavior: 'auto' })
+    })
+  }
 
   return (
     <main className="page page-original-detail">
@@ -298,6 +342,121 @@ export function OriginalDrinkPage() {
             {scenes.map((scene, index) => (
               <span className={index === activeIndex ? 'is-active' : ''} key={scene.id} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="home-video" id="original-promo-video">
+        <div className="section-heading section-heading--row">
+          <div>
+            <p className="eyebrow">Promo Film</p>
+            <h2>A short campaign cut, always ready to play.</h2>
+          </div>
+        </div>
+
+        <div className="home-video__shell">
+          <button
+            className="home-video__audio-toggle"
+            type="button"
+            aria-label={isMuted ? 'Unmute promo video' : 'Mute promo video'}
+            onClick={() => setIsMuted((current) => !current)}
+          >
+            <span aria-hidden="true">{isMuted ? '🔇' : '🔊'}</span>
+            {isMuted ? 'Unmute' : 'Mute'}
+          </button>
+          <video
+            autoPlay
+            className="home-video__player"
+            disablePictureInPicture
+            loop
+            muted={isMuted}
+            playsInline
+            preload="auto"
+            ref={promoVideoRef}
+          >
+            <source src={promoVideoUrl} type="video/mp4" />
+          </video>
+        </div>
+      </section>
+
+      <section className="original-lineup">
+        <div className="original-lineup__surface">
+          <div
+            className="original-lineup__backdrop"
+            style={{ backgroundColor: activeDrink.surface }}
+          />
+
+          <div className="original-lineup__layout">
+            <div
+              className="original-lineup__copy"
+              style={{ color: activeDrink.text }}
+            >
+              <p className="original-lineup__eyebrow">Red Bull Energy Drinks</p>
+              <h2>{activeDrink.name}</h2>
+              <p>{activeDrink.description}</p>
+              <span className="original-lineup__badge" aria-hidden="true" />
+
+              <div className="original-lineup__actions">
+                <Link
+                  className="button-primary"
+                  to={activeDrink.id === 'original' ? '/drinks/original' : '/drinks'}
+                >
+                  See product
+                </Link>
+                <Link className="button-secondary" to="/drinks">
+                  Select your flavor
+                </Link>
+              </div>
+
+              <div className="original-lineup__controls">
+                <button
+                  aria-label="Previous drink"
+                  className="original-lineup__control"
+                  onClick={() => shiftActiveDrink(-1)}
+                  type="button"
+                >
+                  ‹
+                </button>
+                <button
+                  aria-label="Next drink"
+                  className="original-lineup__control"
+                  onClick={() => shiftActiveDrink(1)}
+                  type="button"
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+
+            <div className="original-lineup__visual">
+              <div className="original-lineup__track">
+                {lineupDrinks.map((drink) => {
+                  const isActive = drink.relativeIndex === 0
+                  const x = 10 + drink.relativeIndex * 30
+                  const y = drink.relativeIndex === 0 ? 3 : 12 + (drink.relativeIndex % 3) * 2
+                  const scale = isActive ? 1 : Math.max(0.72, 0.86 - drink.relativeIndex * 0.06)
+                  const rotate =
+                    drink.relativeIndex === 0 ? -2 : drink.relativeIndex % 2 === 0 ? -10 : 9
+                  const opacity = drink.relativeIndex > 3 ? 0 : 1
+
+                  return (
+                    <img
+                      alt={drink.name}
+                      className={`original-lineup__can ${
+                        isActive ? 'is-active' : ''
+                      }`}
+                      key={drink.id}
+                      src={drink.image}
+                      style={{
+                        opacity,
+                        transform: `translate3d(${x}%, ${y}%, 0) scale(${scale}) rotate(${rotate}deg)`,
+                        zIndex: drinks.length - drink.relativeIndex,
+                      }}
+                    />
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </section>
