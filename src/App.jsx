@@ -10,6 +10,8 @@ import {
 import { HomePage } from './pages/HomePage.jsx'
 import { DrinksPage } from './pages/DrinksPage.jsx'
 import { DrinkDetailPage } from './pages/DrinkDetailPage.jsx'
+import { BlogsPage } from './pages/BlogsPage.jsx'
+import { BlogDetailPage } from './pages/BlogDetailPage.jsx'
 import { drinks, getDrinkPath, logoUrl } from './siteData.js'
 import './App.css'
 
@@ -96,6 +98,7 @@ function SiteHeader({ isMenuOpen, onToggleMenu, onCloseMenu }) {
               Home
             </NavLink>
             <NavLink to="/drinks">Energy Drinks</NavLink>
+            <NavLink to="/blogs">Blog</NavLink>
           </nav>
 
           <Link className="site-header__cta" to="/drinks">
@@ -124,6 +127,9 @@ function SiteHeader({ isMenuOpen, onToggleMenu, onCloseMenu }) {
             <aside className="menu-overlay__sidebar">
               <Link to="/" onClick={onCloseMenu}>
                 Home
+              </Link>
+              <Link to="/blogs" onClick={onCloseMenu}>
+                Blog
               </Link>
               <div className="menu-overlay__group">
                 <button
@@ -311,6 +317,8 @@ function AppShell() {
         <Route path="/" element={<HomePage />} />
         <Route path="/drinks" element={<DrinksPage />} />
         <Route path="/drinks/:drinkId" element={<DrinkDetailPage />} />
+        <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/blogs/:slug" element={<BlogDetailPage />} />
       </Routes>
       <SiteFooter />
     </div>

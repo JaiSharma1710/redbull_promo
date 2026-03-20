@@ -1,5 +1,6 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { blogs, getBlogPath } from '../blogData.js'
 import { bannerUrl, classicCanUrl, drinks, getDrinkPath } from '../siteData.js'
 
 const promoVideoUrl =
@@ -98,6 +99,7 @@ export function HomePage() {
   const supportingDrinks = drinks
     .filter((drink) => drink.id !== activeDrink.id)
     .slice(0, 3)
+  const homeBlogs = blogs.slice(0, 4)
 
   return (
     <main className="page page-home">
@@ -250,6 +252,37 @@ export function HomePage() {
         <Link className="button-primary button-primary--small" to="/drinks">
           Open drinks route
         </Link>
+      </section>
+
+      <section className="home-blogs">
+        <div className="section-heading section-heading--row">
+          <div>
+            <p className="eyebrow">From The Blog</p>
+            <h2>Short reads around product design, flavor, and the promo story.</h2>
+          </div>
+          <Link className="button-secondary button-secondary--small" to="/blogs">
+            View all blogs
+          </Link>
+        </div>
+
+        <div className="blogs-grid blogs-grid--home">
+          {homeBlogs.map((blog) => (
+            <Link className="blog-card" key={blog.slug} to={getBlogPath(blog.slug)}>
+              <div className="blog-card__media">
+                <img src={blog.image} alt={blog.title} />
+              </div>
+              <div className="blog-card__body">
+                <p className="eyebrow">{blog.category}</p>
+                <h3>{blog.title}</h3>
+                <p>{blog.excerpt}</p>
+                <div className="blogs-meta">
+                  <span>{blog.date}</span>
+                  <span>{blog.readTime}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="home-video" id="promo-video">
