@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom'
 import { HomePage } from './pages/HomePage.jsx'
 import { DrinksPage } from './pages/DrinksPage.jsx'
+import { OriginalDrinkPage } from './pages/OriginalDrinkPage.jsx'
 import { drinks, logoUrl } from './siteData.js'
 import './App.css'
 
@@ -233,6 +234,7 @@ function AppShell() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/drinks" element={<DrinksPage />} />
+        <Route path="/drinks/original" element={<OriginalDrinkPage />} />
       </Routes>
     </div>
   )

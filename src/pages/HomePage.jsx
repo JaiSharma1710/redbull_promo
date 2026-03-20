@@ -161,7 +161,10 @@ export function HomePage() {
                   <span>{`0${activeIndex + 1}`}</span>
                 </div>
                 <div className="flavor-detail-card__actions">
-                  <Link className="button-primary button-primary--small" to="/drinks">
+                  <Link
+                    className="button-primary button-primary--small"
+                    to={activeDrink.id === 'original' ? '/drinks/original' : '/drinks'}
+                  >
                     {activeDrink.buttonLabel}
                   </Link>
                   <Link className="button-secondary button-secondary--small" to="/drinks">
