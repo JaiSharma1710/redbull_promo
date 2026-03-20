@@ -13,7 +13,7 @@ function lerp(start, end, progress) {
 const scenes = [
   {
     id: 'hero',
-    align: 'right',
+    align: 'left',
     eyebrow: 'The Original Red Bull',
     title: 'Red Bull Energy Drink',
     description: '',
@@ -21,7 +21,7 @@ const scenes = [
   },
   {
     id: 'story',
-    align: 'left',
+    align: 'right',
     eyebrow: '',
     title: '',
     description:
@@ -50,10 +50,10 @@ const scenes = [
 ]
 
 const canWaypoints = [
-  { x: 18, y: 0, scale: 1 },
-  { x: -92, y: -10, scale: 0.8 },
-  { x: 72, y: 4, scale: 0.82 },
-  { x: -36, y: 0, scale: 0.86 },
+  { x: 250, y: 0, scale: 1 },
+  { x: -250, y: -8, scale: 0.8 },
+  { x: 220, y: 4, scale: 0.82 },
+  { x: -210, y: 0, scale: 0.86 },
 ]
 
 function SceneBlock({ scene, isActive }) {
@@ -153,7 +153,6 @@ export function OriginalDrinkPage() {
   }
 
   const activeIndex = Math.round(segment)
-
   return (
     <main className="page page-original-detail">
       <section className="original-detail">
@@ -177,7 +176,7 @@ export function OriginalDrinkPage() {
               <div
                 className="original-detail__can-wrap"
                 style={{
-                  transform: `translate3d(${canStage.x}px, ${canStage.y}px, 0) scale(${canStage.scale})`,
+                  transform: `translate3d(calc(-50% + ${canStage.x}px), calc(-50% + ${canStage.y}px), 0) scale(${canStage.scale})`,
                 }}
               >
                 <img src={classicCanUrl} alt="Red Bull Energy Drink can" />

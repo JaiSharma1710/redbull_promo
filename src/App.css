@@ -1522,16 +1522,18 @@
 
 .original-detail__layout {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
   height: 100%;
-  align-items: center;
 }
 
 .original-detail__copy,
 .original-detail__visual {
   position: relative;
   min-width: 0;
+}
+
+.original-detail__copy {
+  z-index: 2;
+  height: 100%;
 }
 
 .original-detail__scene {
@@ -1625,13 +1627,16 @@
 }
 
 .original-detail__visual {
-  display: grid;
-  place-items: center;
+  position: absolute;
+  inset: 0;
   overflow: visible;
+  pointer-events: none;
 }
 
 .original-detail__can-wrap {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 50%;
   z-index: 2;
   width: min(100%, 260px);
   will-change: transform;
@@ -1769,10 +1774,6 @@
 
   .home-hero__can:hover .hero-can-image {
     transform: rotateY(-14deg) rotateX(8deg) translateY(-12px) scale(1.04);
-  }
-
-  .original-detail__layout {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.78fr);
   }
 
   .original-detail__scene.is-right {
@@ -1952,17 +1953,24 @@
   }
 
   .original-detail__layout {
+    display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
   }
 
   .original-detail__copy {
     order: 2;
+    height: auto;
   }
 
   .original-detail__visual {
+    position: relative;
+    inset: auto;
     order: 1;
     min-height: 320px;
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
   }
 
   .original-detail__scene,
@@ -1992,6 +2000,9 @@
   }
 
   .original-detail__can-wrap {
+    position: relative;
+    left: auto;
+    top: auto;
     width: min(100%, 240px);
     transform: none !important;
   }
