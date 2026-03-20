@@ -9,8 +9,8 @@ import {
 } from 'react-router-dom'
 import { HomePage } from './pages/HomePage.jsx'
 import { DrinksPage } from './pages/DrinksPage.jsx'
-import { OriginalDrinkPage } from './pages/OriginalDrinkPage.jsx'
-import { drinks, logoUrl } from './siteData.js'
+import { DrinkDetailPage } from './pages/DrinkDetailPage.jsx'
+import { drinks, getDrinkPath, logoUrl } from './siteData.js'
 import './App.css'
 
 function ScrollToTop() {
@@ -149,7 +149,7 @@ function SiteHeader({ isMenuOpen, onToggleMenu, onCloseMenu }) {
                     All Red Bull Energy Drinks
                   </Link>
                   {drinks.map((drink) => (
-                    <Link key={drink.id} to="/drinks" onClick={onCloseMenu}>
+                    <Link key={drink.id} to={getDrinkPath(drink.id)} onClick={onCloseMenu}>
                       {drink.name}
                     </Link>
                   ))}
@@ -188,7 +188,7 @@ function SiteHeader({ isMenuOpen, onToggleMenu, onCloseMenu }) {
                     <Link
                       className="menu-overlay__drink-card"
                       key={drink.id}
-                      to="/drinks"
+                      to={getDrinkPath(drink.id)}
                       onClick={onCloseMenu}
                     >
                       <div className="menu-overlay__drink-surface">
@@ -234,7 +234,7 @@ function AppShell() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/drinks" element={<DrinksPage />} />
-        <Route path="/drinks/original" element={<OriginalDrinkPage />} />
+        <Route path="/drinks/:drinkId" element={<DrinkDetailPage />} />
       </Routes>
     </div>
   )

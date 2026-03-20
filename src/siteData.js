@@ -5,6 +5,10 @@ export const classicCanUrl =
 export const bannerUrl =
   'https://redbull-promotional.s3.ap-south-1.amazonaws.com/redbull-home-banner.jpeg'
 
+export function getDrinkPath(drinkId) {
+  return `/drinks/${drinkId}`
+}
+
 export const drinks = [
   {
     id: 'original',

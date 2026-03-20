@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { drinks } from '../siteData.js'
+import { drinks, getDrinkPath } from '../siteData.js'
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max)
@@ -112,21 +112,12 @@ export function DrinksPage() {
                         <span className="stack-card__badge" aria-hidden="true" />
                         <div className="stack-card__meta">
                           <span>{card.flavor}</span>
-                          {card.id === 'original' ? (
-                            <Link
-                              className="button-primary button-primary--small"
-                              to="/drinks/original"
-                            >
-                              {card.buttonLabel}
-                            </Link>
-                          ) : (
-                            <button
-                              className="button-primary button-primary--small"
-                              type="button"
-                            >
-                              {card.buttonLabel}
-                            </button>
-                          )}
+                          <Link
+                            className="button-primary button-primary--small"
+                            to={getDrinkPath(card.id)}
+                          >
+                            {card.buttonLabel}
+                          </Link>
                         </div>
                       </div>
                     </div>

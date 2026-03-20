@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { bannerUrl, classicCanUrl, drinks } from '../siteData.js'
+import { bannerUrl, classicCanUrl, drinks, getDrinkPath } from '../siteData.js'
 
 const promoVideoUrl =
   'https://redbull-promotional.s3.ap-south-1.amazonaws.com/redbull_ad_final_cut_20sec.mp4'
@@ -163,7 +163,7 @@ export function HomePage() {
                 <div className="flavor-detail-card__actions">
                   <Link
                     className="button-primary button-primary--small"
-                    to={activeDrink.id === 'original' ? '/drinks/original' : '/drinks'}
+                    to={getDrinkPath(activeDrink.id)}
                   >
                     {activeDrink.buttonLabel}
                   </Link>
