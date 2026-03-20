@@ -209,6 +209,51 @@ function SiteHeader({ isMenuOpen, onToggleMenu, onCloseMenu }) {
 
 function SiteFooter() {
   const year = new Date().getFullYear()
+  const socialLinks = [
+    {
+      label: 'Instagram',
+      href: 'https://www.instagram.com/redbull/',
+      icon: (
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <rect x="3.25" y="3.25" width="17.5" height="17.5" rx="5.2" />
+          <circle cx="12" cy="12" r="4.2" />
+          <circle cx="17.3" cy="6.8" r="1.15" fill="currentColor" stroke="none" />
+        </svg>
+      ),
+    },
+    {
+      label: 'YouTube',
+      href: 'https://www.youtube.com/@RedBull',
+      icon: (
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M21 12c0 2.9-.3 4.4-.74 5.24a2.9 2.9 0 0 1-1.27 1.27C18.16 19 16.66 19.3 12 19.3S5.84 19 5.01 18.51a2.9 2.9 0 0 1-1.27-1.27C3.3 16.4 3 14.9 3 12s.3-4.4.74-5.24A2.9 2.9 0 0 1 5 5.49C5.84 5 7.34 4.7 12 4.7s6.16.3 6.99.79a2.9 2.9 0 0 1 1.27 1.27C20.7 7.6 21 9.1 21 12Z" />
+          <path fill="currentColor" stroke="none" d="m10 8.8 5.8 3.2-5.8 3.2Z" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Facebook',
+      href: 'https://www.facebook.com/RedBull/',
+      icon: (
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M13.3 20v-6.5h2.3l.35-2.73H13.3V9.03c0-.79.22-1.33 1.35-1.33H16V5.26c-.64-.07-1.28-.11-1.93-.1-1.92 0-3.24 1.17-3.24 3.33v2.23H8.65v2.73h2.18V20Z" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Official Site',
+      href: 'https://www.redbull.com/',
+      icon: (
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M12 3.5a13 13 0 0 0 0 17" fill="none" />
+          <path d="M12 3.5a13 13 0 0 1 0 17" fill="none" />
+          <path d="M4.8 9h14.4" fill="none" />
+          <path d="M4.8 15h14.4" fill="none" />
+        </svg>
+      ),
+    },
+  ]
 
   return (
     <footer className="site-footer">
@@ -224,18 +269,12 @@ function SiteFooter() {
         </div>
 
         <div className="site-footer__links">
-          <a href="https://www.instagram.com/redbull/" rel="noreferrer" target="_blank">
-            Instagram
-          </a>
-          <a href="https://www.youtube.com/@RedBull" rel="noreferrer" target="_blank">
-            YouTube
-          </a>
-          <a href="https://www.facebook.com/RedBull/" rel="noreferrer" target="_blank">
-            Facebook
-          </a>
-          <a href="https://www.redbull.com/" rel="noreferrer" target="_blank">
-            Official Site
-          </a>
+          {socialLinks.map((link) => (
+            <a href={link.href} key={link.label} rel="noreferrer" target="_blank">
+              <span className="site-footer__icon">{link.icon}</span>
+              <span>{link.label}</span>
+            </a>
+          ))}
         </div>
 
         <p className="site-footer__copyright">© {year} Red Bull promotional experience.</p>
