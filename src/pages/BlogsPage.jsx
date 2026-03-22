@@ -18,9 +18,6 @@ export function BlogsPage() {
         </div>
 
         <Link className="blogs-hero__feature" to={getBlogPath(featuredBlog.slug)}>
-          <div className="blogs-hero__feature-media">
-            <img src={featuredBlog.image} alt={featuredBlog.title} />
-          </div>
           <div className="blogs-hero__feature-body">
             <p className="eyebrow">{featuredBlog.category}</p>
             <h2>{featuredBlog.title}</h2>
@@ -44,9 +41,6 @@ export function BlogsPage() {
         <div className="blogs-grid">
           {otherBlogs.map((blog) => (
             <Link className="blog-card" key={blog.slug} to={getBlogPath(blog.slug)}>
-              <div className="blog-card__media">
-                <img src={blog.image} alt={blog.title} />
-              </div>
               <div className="blog-card__body">
                 <p className="eyebrow">{blog.category}</p>
                 <h3>{blog.title}</h3>

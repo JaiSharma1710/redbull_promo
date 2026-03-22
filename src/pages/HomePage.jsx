@@ -27,6 +27,93 @@ const serveMoments = [
   'Game-day energy with a cleaner product-first look',
 ]
 
+const testimonials = [
+  {
+    id: 1,
+    name: 'Aarav Mehta',
+    role: 'Exam Prep Student',
+    rating: 5,
+    quote: 'Red Bull helps me stay sharp during long revision nights without feeling too heavy.',
+  },
+  {
+    id: 2,
+    name: 'Nina Brooks',
+    role: 'Marketing Professional',
+    rating: 5,
+    quote: 'The original Red Bull is still the easiest pick when I need quick focus in a packed workday.',
+  },
+  {
+    id: 3,
+    name: 'Rohan Sethi',
+    role: 'Night Shift Designer',
+    rating: 4,
+    quote: 'Sugarfree gives me the same familiar Red Bull lift while fitting better into my everyday routine.',
+  },
+  {
+    id: 4,
+    name: 'Mia Carter',
+    role: 'Content Lead',
+    rating: 5,
+    quote: 'Red Bull works because the energy feels reliable. It is quick, direct, and easy to trust.',
+  },
+  {
+    id: 5,
+    name: 'Kabir Anand',
+    role: 'Gym Regular',
+    rating: 5,
+    quote: 'Before training, Red Bull gives me a cleaner boost than most oversized energy drinks.',
+  },
+  {
+    id: 6,
+    name: 'Sana Ali',
+    role: 'University Student',
+    rating: 4,
+    quote: 'When study hours stretch late, Red Bull helps me stay alert without completely throwing off the session.',
+  },
+  {
+    id: 7,
+    name: 'Jason Reed',
+    role: 'Sports Photographer',
+    rating: 5,
+    quote: 'Red Bull is the one I reach for on event days because it keeps my energy steady and practical.',
+  },
+  {
+    id: 8,
+    name: 'Priya Nair',
+    role: 'Creative Producer',
+    rating: 5,
+    quote: 'The flavored editions are fun, but the original can still feels like the most dependable option.',
+  },
+  {
+    id: 9,
+    name: 'Daniel Cho',
+    role: 'Startup Founder',
+    rating: 4,
+    quote: 'For long meetings and travel days, Red Bull is still one of the most balanced energy drinks around.',
+  },
+  {
+    id: 10,
+    name: 'Ishita Rao',
+    role: 'Sports Editor',
+    rating: 5,
+    quote: 'Red Bull gives me the fast mental reset I need when deadlines stack up during the day.',
+  },
+  {
+    id: 11,
+    name: 'Leo Martin',
+    role: 'Sales Consultant',
+    rating: 5,
+    quote: 'I like that Red Bull feels strong enough to work, but not so extreme that it becomes uncomfortable.',
+  },
+  {
+    id: 12,
+    name: 'Anaya Kapoor',
+    role: 'Visual Designer',
+    rating: 5,
+    quote: 'Pink, Yellow, and Sugarfree each have their own mood, but the Red Bull core always stays recognizable.',
+  },
+]
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max)
 }
@@ -40,6 +127,8 @@ export function HomePage() {
   const promoVideoRef = useRef(null)
   const [progress, setProgress] = useState(0)
   const [isMuted, setIsMuted] = useState(true)
+  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0)
+  const [isTestimonialAnimating, setIsTestimonialAnimating] = useState(false)
 
   const updateProgress = useEffectEvent(() => {
     const node = showcaseRef.current
@@ -79,6 +168,22 @@ export function HomePage() {
     }
   }, [isMuted])
 
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      if (isTestimonialAnimating) {
+        setActiveTestimonialIndex((current) => (current + 1) % testimonials.length)
+        setIsTestimonialAnimating(false)
+        return
+      }
+
+      setIsTestimonialAnimating(true)
+    }, isTestimonialAnimating ? 8200 : 220)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [isTestimonialAnimating])
+
   const segment = progress * (drinks.length - 1)
   const activeIndex = Math.round(segment)
   const baseIndex = Math.floor(segment)
@@ -100,6 +205,22 @@ export function HomePage() {
     .filter((drink) => drink.id !== activeDrink.id)
     .slice(0, 3)
   const homeBlogs = blogs.slice(0, 4)
+  const visibleTestimonials = [-1, 0, 1, 2].map((offset, slotIndex) => {
+    const index =
+      (activeTestimonialIndex + offset + testimonials.length) % testimonials.length
+
+    return {
+      ...testimonials[index],
+      position:
+        slotIndex === 0
+          ? 'left'
+          : slotIndex === 1
+            ? 'center'
+            : slotIndex === 2
+              ? 'right'
+              : 'incoming',
+    }
+  })
 
   return (
     <main className="page page-home">
@@ -180,7 +301,7 @@ export function HomePage() {
               <div
                 className="flavor-showcase__visual-inner"
                 style={{
-                  transform: `translate(${stage.x}%, ${stage.y}%) scale(${stage.scale}) rotate(${stage.rotate}deg)`,
+                  transform: `translate(calc(-50% + ${stage.x}%), calc(-50% + ${stage.y}%)) scale(${stage.scale}) rotate(${stage.rotate}deg)`,
                 }}
               >
                 <img
@@ -254,6 +375,37 @@ export function HomePage() {
         </Link>
       </section>
 
+      <section className="testimonials-section">
+        <div className="section-heading section-heading--row">
+          <div>
+            <p className="eyebrow">Testimonials</p>
+            <h2>Auto-moving praise with the center card taking the focus.</h2>
+          </div>
+        </div>
+
+        <div className="testimonials-carousel">
+          <div
+            className={`testimonials-track ${isTestimonialAnimating ? 'is-animating' : ''}`}
+          >
+            {visibleTestimonials.map((item) => (
+              <article
+                className={`testimonial-card testimonial-card--${item.position}`}
+                key={`${activeTestimonialIndex}-${item.id}-${item.position}`}
+              >
+                <div className="testimonial-card__rating" aria-label={`${item.rating} out of 5`}>
+                  {'★'.repeat(item.rating)}
+                </div>
+                <p className="testimonial-card__quote">“{item.quote}”</p>
+                <div className="testimonial-card__author">
+                  <strong>{item.name}</strong>
+                  <span>{item.role}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="home-blogs">
         <div className="section-heading section-heading--row">
           <div>
@@ -268,9 +420,6 @@ export function HomePage() {
         <div className="blogs-grid blogs-grid--home">
           {homeBlogs.map((blog) => (
             <Link className="blog-card" key={blog.slug} to={getBlogPath(blog.slug)}>
-              <div className="blog-card__media">
-                <img src={blog.image} alt={blog.title} />
-              </div>
               <div className="blog-card__body">
                 <p className="eyebrow">{blog.category}</p>
                 <h3>{blog.title}</h3>

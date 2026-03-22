@@ -28,10 +28,6 @@ export function BlogDetailPage() {
               <span>{blog.readTime}</span>
             </div>
           </div>
-
-          <div className="blog-detail__hero-media">
-            <img src={blog.image} alt={blog.title} />
-          </div>
         </section>
 
         <section className="blog-detail__content">
@@ -58,9 +54,6 @@ export function BlogDetailPage() {
         <div className="blogs-grid">
           {relatedBlogs.map((entry) => (
             <Link className="blog-card" key={entry.slug} to={`/blogs/${entry.slug}`}>
-              <div className="blog-card__media">
-                <img src={entry.image} alt={entry.title} />
-              </div>
               <div className="blog-card__body">
                 <p className="eyebrow">{entry.category}</p>
                 <h3>{entry.title}</h3>

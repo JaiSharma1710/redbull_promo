@@ -375,6 +375,10 @@ export function DrinkDetailPage() {
   const [activeDrinkIndex, setActiveDrinkIndex] = useState(
     currentDrinkIndex >= 0 ? currentDrinkIndex : 0,
   )
+  const drink =
+    currentDrinkIndex >= 0 ? drinks[currentDrinkIndex] : drinks[0]
+  const detail = drinkDetails[drink.id] ?? drinkDetails.original
+  const { scenes, ingredientCards, promoHeading, promoVideoUrl } = detail
 
   useEffect(() => {
     if (currentDrinkIndex >= 0) {
@@ -448,20 +452,17 @@ export function DrinkDetailPage() {
       return
     }
 
+    node.load()
     node.muted = isMuted
 
     if (!isMuted) {
       void node.play().catch(() => {})
     }
-  }, [isMuted])
+  }, [isMuted, drinkId])
 
   if (currentDrinkIndex < 0) {
     return <Navigate replace to="/drinks" />
   }
-
-  const drink = drinks[currentDrinkIndex]
-  const detail = drinkDetails[drink.id] ?? drinkDetails.original
-  const { scenes, ingredientCards, promoHeading, promoVideoUrl } = detail
 
   const sceneSegments = scenes.length - 1
   const sceneStep = 1 + sceneHoldSegments
@@ -616,6 +617,7 @@ export function DrinkDetailPage() {
             autoPlay
             className="home-video__player"
             disablePictureInPicture
+            key={promoVideoUrl}
             loop
             muted={isMuted}
             playsInline
